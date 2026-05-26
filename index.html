@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="robots" content="noarchive,noindex,nofollow">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <title>随记</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            font-size: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+        body{
+            background:#1e222b;
+            color:#e6edf7;
+            font-family: "Microsoft Yahei", "微软雅黑", sans-serif;
+            padding: 20px 15px;
+            min-height: 100vh;
+        }
+        @media (prefers-color-scheme: light) {
+            body {
+                background: #f0f2f5;
+                color: #222833;
+            }
+        }
+        .card {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 22px;
+            border-radius: 16px;
+            background-color: #272c37;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+        }
+        @media (prefers-color-scheme: light) {
+            .card {
+                background-color: #ffffff;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+        }
+        .content{line-height: 1.7;}
+        .content h1 {font-size:24px;margin:0 0 16px;padding-bottom:6px;border-bottom:1px solid #444;color:#87ceeb;}
+        .content h2 {font-size:20px;margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid #333;color:#7fc8f0;}
+        .content h3,.content h4,.content h5,.content h6 {color:#87ceeb;margin:12px 0 6px;}
+        .content h3 {font-size:18px;}
+        .content h4 {font-size:17px;}
+        .content h5 {font-size:16px;}
+        .content h6 {font-size:15px;}
+
+        @media (prefers-color-scheme: light) {
+            .content h1,.content h2,.content h3,.content h4,.content h5,.content h6 {
+                color:#008b8b;
+            }
+        }
+
+        .content p {margin:10px 0;}
+        .content ul,.content ol {margin:10px 0;padding-left:25px;}
+        .content li {margin:5px 0;}
+        .content strong {font-weight:bold;}
+        .content em {font-style:italic;}
+        .content del {text-decoration:line-through;}
+        .content blockquote {border-left:4px solid #20B2AA;padding:6px 15px;margin:10px 0;color:#aaa;}
+        .content code {background:#333;padding:2px 5px;border-radius:4px;}
+        .content pre {background:#333;padding:15px;border-radius:8px;overflow-x:auto;margin:10px 0;}
+
+        .content table {
+            width:100%;border-collapse:collapse;margin:15px 0;
+        }
+        .content th,.content td {
+            border:1px solid #444;padding:9px 12px;text-align:left;
+        }
+        .content th {background:#333;font-weight:bold;}
+        @media (prefers-color-scheme: light) {
+            .content th,.content td {border-color:#ddd;}
+            .content th {background:#f0f0f0;}
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 12px 0;
+            display: block;
+        }
+        /* 图片加载失败隐藏破损图标 */
+        img:not([src]),
+        img[src=""],
+        img:-moz-broken,
+        img:invalid {
+            display: none !important;
+        }
+        img::before {
+            content: "";
+            display: none;
+        }
+
+        a, a:link, a:visited, a:hover, a:active {
+            color: inherit !important;
+            text-decoration: none !important;
+            cursor: text !important;
+            pointer-events: auto;
+        }
+
+        .destroy-reader {width:0;height:0;overflow:hidden;visibility:hidden;}
+    </style>
+</head>
+<body>
+    <div class="destroy-reader"><span></span></div>
+    <div class="card">
+        <div class="content" id="mdBox"></div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+    document.body.removeAttribute('data-reader');
+    if(location.href.startsWith('about:reader')){
+        location.href = location.href.replace('about:reader?url=','');
+    }
+});
+window.addEventListener('load', function(){
+    if(!location.search){
+        location.search = 't=' + new Date().getTime();
+    }
+})
+
+fetch('content.md')
+.then(res=>res.text())
+.then(mdText=>{
+    const box = document.getElementById("mdBox");
+    box.innerHTML = marked.parse(mdText);
+
+    // 图片加载失败自动隐藏
+    const imgs = box.querySelectorAll('img');
+    imgs.forEach(img => {
+        img.onerror = function() {
+            this.style.display = 'none';
+        }
+    });
+})
+.catch(()=>{
+    document.getElementById("mdBox").innerText = "内容加载失败";
+})
+</script>
+</body>
+</html>
